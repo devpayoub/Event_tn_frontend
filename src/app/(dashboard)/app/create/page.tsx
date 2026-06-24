@@ -8,10 +8,12 @@ import React, { Suspense } from "react";
 export default async function CreatePage() {
 	const cookieStore = await cookies();
 	if (cookieStore.get("logged_in")?.value !== "true") redirect("/login");
-	const [events, posts] = await Promise.all([
-		fetch(`${API_BASE_URL}/api/events`).then((r) => r.json()),
-		fetch(`${API_BASE_URL}/api/posts`).then((r) => r.json()),
+	const [eventsRes, postsRes] = await Promise.all([
+		fetch(`${API_BASE_URL}/api/events?limit=0`).then((r) => r.json()),
+		fetch(`${API_BASE_URL}/api/posts?limit=0`).then((r) => r.json()),
 	]);
+	const events = (eventsRes as any).items ?? [];
+	const posts = (postsRes as any).items ?? [];
 
 	return (
 		<PageContainer>

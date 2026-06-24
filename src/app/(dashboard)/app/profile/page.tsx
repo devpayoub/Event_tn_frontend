@@ -24,13 +24,13 @@ export default function ProfilePage() {
 
 		Promise.all([
 			fetch("/api/user/profile", { headers }).then((r) => (r.ok ? r.json() : { name: "User", role: "", bio: "", avatar: "" })),
-			fetch("/api/events", { headers }).then((r) => r.json()),
-			fetch("/api/posts", { headers }).then((r) => r.json()),
+			fetch("/api/events?limit=0", { headers }).then((r) => r.json()),
+			fetch("/api/posts?limit=0", { headers }).then((r) => r.json()),
 			fetch("/api/meetings", { headers }).then((r) => r.json()),
-		]).then(([prof, evts, psts, meets]) => {
+		]).then(([prof, evtsRaw, pstsRaw, meets]) => {
 			setProfile(prof);
-			setEvents(evts);
-			setPosts(psts);
+			setEvents((evtsRaw as any).items ?? []);
+			setPosts((pstsRaw as any).items ?? []);
 			setMeetings(meets);
 		}).catch(() => {});
 	}, []);

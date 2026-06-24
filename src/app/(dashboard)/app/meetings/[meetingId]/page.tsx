@@ -27,14 +27,14 @@ export default function MeetingDetailPage() {
 
 		Promise.all([
 			fetch(`/api/meetings/${params.meetingId}`, { headers: authHeaders }).then((r) => (r.ok ? r.json() : null)),
-			fetch("/api/events").then((r) => r.json()),
-			fetch("/api/posts").then((r) => r.json()),
+			fetch("/api/events?limit=0").then((r) => r.json()),
+			fetch("/api/posts?limit=0").then((r) => r.json()),
 		])
-			.then(([m, evts, psts]) => {
+			.then(([m, evtsRaw, pstsRaw]) => {
 				if (!m) { router.push("/app/meetings"); return; }
 				setMeeting(m);
-				setEvents(evts);
-				setPosts(psts);
+				setEvents((evtsRaw as any).items ?? []);
+				setPosts((pstsRaw as any).items ?? []);
 			})
 			.catch(() => router.push("/app/meetings"))
 			.finally(() => setLoading(false));

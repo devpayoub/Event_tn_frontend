@@ -21,7 +21,7 @@ export default async function EventDetailPage({
 			if (!r.ok) throw new Error("not found");
 			return r.json() as Promise<Record<string, unknown>>;
 		}).catch(() => null),
-		fetch(`${API_BASE_URL}/api/posts`).then((r) => r.json()) as Promise<Record<string, unknown>[]>,
+		fetch(`${API_BASE_URL}/api/posts?limit=0`).then((r) => r.json()) as Promise<Record<string, unknown>>,
 		fetch(`${API_BASE_URL}/api/meetings`).then((r) => r.json()) as Promise<Record<string, unknown>[]>,
 		fetch(`${API_BASE_URL}/api/comments?eventId=${eventId}`).then((r) => r.json()) as Promise<Record<string, unknown>[]>,
 	]);
@@ -29,7 +29,8 @@ export default async function EventDetailPage({
 	const event = eventRes as { id: string; title: string; description: string; date: string; time: string; location: string; coverImage: string; authorName: string; status?: string; ticketUrl?: string } | null;
 	if (!event) notFound();
 
-	const relatedPosts = allPosts.filter((p: Record<string, unknown>) => p.eventId === eventId);
+	const allPostsList = ((allPosts as any)?.items ?? []) as Record<string, unknown>[];
+	const relatedPosts = allPostsList.filter((p: Record<string, unknown>) => p.eventId === eventId);
 	const relatedMeetings = allMeetings.filter((m: Record<string, unknown>) => m.eventId === eventId);
 
 	return (

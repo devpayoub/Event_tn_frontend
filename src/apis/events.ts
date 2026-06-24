@@ -1,8 +1,8 @@
 import { apiFetch } from "./client"
-import type { EventItem } from "./types"
+import type { EventItem, PaginatedResponse } from "./types"
 
-export async function getEvents(): Promise<EventItem[]> {
-	return apiFetch<EventItem[]>("/api/events")
+export async function getEvents(skip = 0, limit = 20): Promise<PaginatedResponse<EventItem>> {
+	return apiFetch<PaginatedResponse<EventItem>>(`/api/events?skip=${skip}&limit=${limit}`)
 }
 
 export async function getEventById(id: string): Promise<EventItem> {

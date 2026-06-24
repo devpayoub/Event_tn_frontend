@@ -6,13 +6,15 @@ import Link from "next/link";
 import React from "react";
 
 export default async function PostsPage() {
-	const [posts, events] = await Promise.all([
+	const [postsRes, eventsRes] = await Promise.all([
 		fetch(`${API_BASE_URL}/api/posts`).then((r) => r.json()),
-		fetch(`${API_BASE_URL}/api/events`).then((r) => r.json()),
-	]);
+		fetch(`${API_BASE_URL}/api/events?limit=0`).then((r) => r.json()),
+	]) as any[];
+	const { items: initialPosts, total, pages } = postsRes;
+	const events = (eventsRes as any).items ?? [];
 
 	const allCommentsRes = await Promise.all(
-		(posts as any[]).map((p) =>
+		(initialPosts as any[]).map((p) =>
 			fetch(`${API_BASE_URL}/api/comments?postId=${p.id}`).then((r) =>
 				r.json(),
 			),
@@ -39,7 +41,7 @@ export default async function PostsPage() {
 					) : undefined
 				}
 			/>
-			<PostsView initialPosts={posts} events={events} comments={comments} />
+			<PostsView initialPosts={initialPosts ?? []} events={events} comments={comments} initialTotal={total ?? 0} initialPages={pages ?? 1} />
 		</PageContainer>
 	);
 }

@@ -81,6 +81,14 @@ export interface MeetingItem {
 	created_at?: string
 }
 
+// ── Pagination ──
+export interface PaginatedResponse<T> {
+	items: T[]
+	total: number
+	page: number
+	pages: number
+}
+
 // ── Tokens ──
 export interface TokenResponse {
 	access: string

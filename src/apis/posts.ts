@@ -1,8 +1,8 @@
 import { apiFetch } from "./client"
-import type { PostItem } from "./types"
+import type { PaginatedResponse, PostItem } from "./types"
 
-export async function getPosts(): Promise<PostItem[]> {
-	return apiFetch<PostItem[]>("/api/posts")
+export async function getPosts(skip = 0, limit = 20): Promise<PaginatedResponse<PostItem>> {
+	return apiFetch<PaginatedResponse<PostItem>>(`/api/posts?skip=${skip}&limit=${limit}`)
 }
 
 export async function getPostById(id: string): Promise<PostItem> {

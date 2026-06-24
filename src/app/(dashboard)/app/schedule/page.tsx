@@ -18,11 +18,13 @@ interface AgendaItem {
 export default async function SchedulePage() {
 	const cookieStore = await cookies();
 	if (cookieStore.get("logged_in")?.value !== "true") redirect("/login");
-	const [events, posts, meetings] = await Promise.all([
-		fetch(`${API_BASE_URL}/api/events`).then((r) => r.json()),
-		fetch(`${API_BASE_URL}/api/posts`).then((r) => r.json()),
+	const [eventsRes, postsRes, meetings] = await Promise.all([
+		fetch(`${API_BASE_URL}/api/events?limit=0`).then((r) => r.json()),
+		fetch(`${API_BASE_URL}/api/posts?limit=0`).then((r) => r.json()),
 		fetch(`${API_BASE_URL}/api/meetings`).then((r) => r.json()),
 	]);
+	const events = (eventsRes as any).items ?? [];
+	const posts = (postsRes as any).items ?? [];
 
 	const agendaItems: AgendaItem[] = [];
 

@@ -6,7 +6,8 @@ import Link from "next/link";
 import React from "react";
 
 export default async function EventsPage() {
-	const events = await fetch(`${API_BASE_URL}/api/events`).then((r) => r.json());
+	const eventsRes = await fetch(`${API_BASE_URL}/api/events`).then((r) => r.json()) as any;
+	const { items: initialEvents, total, pages } = eventsRes;
 	const cookieStore = await cookies();
 	const isAuth = cookieStore.get("logged_in")?.value === "true";
 
@@ -26,7 +27,7 @@ export default async function EventsPage() {
 					) : undefined
 				}
 			/>
-			<EventsView initialEvents={events} />
+			<EventsView initialEvents={initialEvents ?? []} initialTotal={total ?? 0} initialPages={pages ?? 1} />
 		</PageContainer>
 	);
 }

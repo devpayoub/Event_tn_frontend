@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 export default async function HomePage() {
-	const events = await fetch(`${API_BASE_URL}/api/events`).then((r) => r.json()) as EventItem[];
+	const { items: events } = await fetch(`${API_BASE_URL}/api/events?limit=0`).then((r) => r.json()) as { items: EventItem[] };
 
 	const sortedEvents = [...events].sort(
 		(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
