@@ -1,5 +1,6 @@
 "use client";
 
+import { useConfirm } from "@/components/shared/confirm-dialog";
 import { useToast } from "@/components/shared/toast";
 import { SectionCard } from "@/components/layout/page-container";
 import { useClickSound } from "@/hooks/use-click-sound";
@@ -32,6 +33,7 @@ export function ProfileView({
 	const 	router = useRouter();
 	const playClick = useClickSound();
 	const { toast } = useToast();
+	const { confirm } = useConfirm();
 	const [activeTab, setActiveTab] = useState<Tab>("profile");
 	const [localEvents, setLocalEvents] = useState(myEvents);
 	const [localPosts, setLocalPosts] = useState(myPosts);
@@ -54,6 +56,14 @@ export function ProfileView({
 
 	const handleDelete = async (type: "events" | "posts" | "meetings", id: string) => {
 		playClick();
+		const label = type.slice(0, -1);
+		const ok = await confirm({
+			title: `Delete ${label.charAt(0).toUpperCase() + label.slice(1)}`,
+			message: `Are you sure you want to delete this ${label}? This action cannot be undone.`,
+			confirmLabel: "Delete",
+			variant: "danger",
+		});
+		if (!ok) return;
 		const token = localStorage.getItem("access_token");
 		const res = await fetch(`/api/${type}/${id}`, {
 			method: "DELETE",

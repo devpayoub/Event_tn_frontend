@@ -1,5 +1,6 @@
 "use client";
 
+import { useConfirm } from "@/components/shared/confirm-dialog";
 import { useToast } from "@/components/shared/toast";
 import { PageContainer, PageHeader } from "@/components/layout/page-container";
 import { MeetingForm } from "@/components/forms/meeting-form";
@@ -11,6 +12,7 @@ export default function MeetingDetailPage() {
 	const params = useParams<{ meetingId: string }>();
 	const 	router = useRouter();
 	const { toast } = useToast();
+	const { confirm } = useConfirm();
 	const [meeting, setMeeting] = useState<any>(null);
 	const [events, setEvents] = useState<any[]>([]);
 	const [posts, setPosts] = useState<any[]>([]);
@@ -39,6 +41,13 @@ export default function MeetingDetailPage() {
 	}, [params.meetingId, router]);
 
 	const handleDelete = async () => {
+		const ok = await confirm({
+			title: "Delete Meeting",
+			message: "Are you sure you want to delete this meeting? This action cannot be undone.",
+			confirmLabel: "Delete",
+			variant: "danger",
+		});
+		if (!ok) return;
 		const token = localStorage.getItem("access_token");
 		const res = await fetch(`/api/meetings/${params.meetingId}`, {
 			method: "DELETE",

@@ -1,5 +1,6 @@
 "use client";
 
+import { useConfirm } from "@/components/shared/confirm-dialog";
 import { useToast } from "@/components/shared/toast";
 import { SectionCard } from "@/components/layout/page-container";
 import { useClickSound } from "@/hooks/use-click-sound";
@@ -18,6 +19,7 @@ export function PostsView({ initialPosts, events, comments }: PostsViewProps) {
 	const 	router = useRouter();
 	const playClick = useClickSound();
 	const { toast } = useToast();
+	const { confirm } = useConfirm();
 	const [posts, setPosts] = useState<PostItem[]>(initialPosts);
 	const [isAuth, setIsAuth] = useState(false);
 
@@ -91,6 +93,13 @@ export function PostsView({ initialPosts, events, comments }: PostsViewProps) {
 
 	const handleDelete = async (id: string) => {
 		playClick();
+		const ok = await confirm({
+			title: "Delete Post",
+			message: "Are you sure you want to delete this post? This action cannot be undone.",
+			confirmLabel: "Delete",
+			variant: "danger",
+		});
+		if (!ok) return;
 
 		const delToken = localStorage.getItem("access_token");
 		try {
