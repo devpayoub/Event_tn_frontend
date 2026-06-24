@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import { SectionCard } from "@/components/layout/page-container";
 import { useClickSound } from "@/hooks/use-click-sound";
 import type {
@@ -28,8 +29,9 @@ export function ProfileView({
 	myPosts,
 	myMeetings,
 }: ProfileViewProps) {
-	const router = useRouter();
+	const 	router = useRouter();
 	const playClick = useClickSound();
+	const { toast } = useToast();
 	const [activeTab, setActiveTab] = useState<Tab>("profile");
 	const [localEvents, setLocalEvents] = useState(myEvents);
 	const [localPosts, setLocalPosts] = useState(myPosts);
@@ -51,7 +53,6 @@ export function ProfileView({
 	};
 
 	const handleDelete = async (type: "events" | "posts" | "meetings", id: string) => {
-		if (!confirm(`Delete this ${type.slice(0, -1)}?`)) return;
 		playClick();
 		const token = localStorage.getItem("access_token");
 		const res = await fetch(`/api/${type}/${id}`, {
@@ -62,7 +63,10 @@ export function ProfileView({
 			if (type === "events") setLocalEvents((prev) => prev.filter((e) => e.id !== id));
 			if (type === "posts") setLocalPosts((prev) => prev.filter((p) => p.id !== id));
 			if (type === "meetings") setLocalMeetings((prev) => prev.filter((m) => m.id !== id));
+			toast("success", `${type.slice(0, -1).charAt(0).toUpperCase() + type.slice(0, -1).slice(1)} deleted successfully`);
 			router.refresh();
+		} else {
+			toast("error", `Failed to delete ${type.slice(0, -1)}`);
 		}
 	};
 
@@ -101,9 +105,11 @@ export function ProfileView({
 			}
 
 			setSuccess("Profile updated successfully");
+			toast("success", "Profile updated successfully");
 			router.refresh();
 		} catch (err: any) {
 			setError(err.message);
+			toast("error", err.message);
 		} finally {
 			setSaving(false);
 		}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import { SectionCard } from "@/components/layout/page-container";
 import { useClickSound } from "@/hooks/use-click-sound";
 import type { CommentItem, EventItem, PostItem } from "@/lib/api";
@@ -14,8 +15,9 @@ interface PostsViewProps {
 }
 
 export function PostsView({ initialPosts, events, comments }: PostsViewProps) {
-	const router = useRouter();
+	const 	router = useRouter();
 	const playClick = useClickSound();
+	const { toast } = useToast();
 	const [posts, setPosts] = useState<PostItem[]>(initialPosts);
 	const [isAuth, setIsAuth] = useState(false);
 
@@ -77,15 +79,17 @@ export function PostsView({ initialPosts, events, comments }: PostsViewProps) {
 				setPosts((prev) =>
 					prev.map((p) => (p.id === id ? { ...p, status: nextStatus } : p)),
 				);
+				toast("success", `Post ${nextStatus === "published" ? "published" : "unpublished"} successfully`);
 				router.refresh();
+			} else {
+				toast("error", "Failed to toggle publish status");
 			}
 		} catch (err) {
-			console.error("Failed to toggle publish status:", err);
+			toast("error", "Failed to toggle publish status");
 		}
 	};
 
 	const handleDelete = async (id: string) => {
-		if (!confirm("Are you sure you want to delete this post?")) return;
 		playClick();
 
 		const delToken = localStorage.getItem("access_token");
@@ -97,10 +101,13 @@ export function PostsView({ initialPosts, events, comments }: PostsViewProps) {
 
 			if (res.ok) {
 				setPosts((prev) => prev.filter((p) => p.id !== id));
+				toast("success", "Post deleted successfully");
 				router.refresh();
+			} else {
+				toast("error", "Failed to delete post");
 			}
 		} catch (err) {
-			console.error("Failed to delete post:", err);
+			toast("error", "Failed to delete post");
 		}
 	};
 

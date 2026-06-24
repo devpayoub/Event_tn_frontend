@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import { PageContainer, PageHeader } from "@/components/layout/page-container";
 import { MeetingForm } from "@/components/forms/meeting-form";
 import { useParams, useRouter } from "next/navigation";
@@ -8,7 +9,8 @@ import React from "react";
 
 export default function MeetingDetailPage() {
 	const params = useParams<{ meetingId: string }>();
-	const router = useRouter();
+	const 	router = useRouter();
+	const { toast } = useToast();
 	const [meeting, setMeeting] = useState<any>(null);
 	const [events, setEvents] = useState<any[]>([]);
 	const [posts, setPosts] = useState<any[]>([]);
@@ -37,13 +39,17 @@ export default function MeetingDetailPage() {
 	}, [params.meetingId, router]);
 
 	const handleDelete = async () => {
-		if (!confirm("Delete this meeting?")) return;
 		const token = localStorage.getItem("access_token");
 		const res = await fetch(`/api/meetings/${params.meetingId}`, {
 			method: "DELETE",
 			headers: token ? { Authorization: `Bearer ${token}` } : {},
 		});
-		if (res.ok) router.push("/app/meetings");
+		if (res.ok) {
+			toast("success", "Meeting deleted successfully");
+			router.push("/app/meetings");
+		} else {
+			toast("error", "Failed to delete meeting");
+		}
 	};
 
 	if (loading) {

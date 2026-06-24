@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import { useClickSound } from "@/hooks/use-click-sound";
 import type { EventItem, PostItem } from "@/lib/api";
 import { useRouter } from "next/navigation";
@@ -15,6 +16,7 @@ interface PostFormProps {
 export function PostForm({ initialData, events }: PostFormProps) {
 	const router = useRouter();
 	const playClick = useClickSound();
+	const { toast } = useToast();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 
@@ -70,10 +72,12 @@ export function PostForm({ initialData, events }: PostFormProps) {
 			}
 
 			const created = initialData ? null : await res.json();
+			toast("success", initialData ? "Post updated successfully" : "Post created successfully");
 			router.push(`/app/posts/${created ? created.id : id}`);
 			router.refresh();
 		} catch (err: any) {
 			setError(err.message || "An unexpected error occurred");
+			toast("error", err.message || "An unexpected error occurred");
 		} finally {
 			setLoading(false);
 		}

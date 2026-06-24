@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import { useClickSound } from "@/hooks/use-click-sound";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -28,8 +29,9 @@ const AUTH_NAV = [
 
 export function DashboardSidebar() {
 	const pathname = usePathname();
-	const router = useRouter();
+	const 	router = useRouter();
 	const playClick = useClickSound();
+	const { toast } = useToast();
 	const [isOpen, setIsOpen] = useState(false);
 	const [profile, setProfile] = useState<UserProfile | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -71,9 +73,9 @@ export function DashboardSidebar() {
 	const handleLogout = () => {
 		playClick();
 		localStorage.removeItem("access_token");
-		localStorage.removeItem("refresh_token");
 		document.cookie = "logged_in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
 		setProfile(null);
+		toast("success", "Logged out successfully");
 		router.push("/login");
 	};
 

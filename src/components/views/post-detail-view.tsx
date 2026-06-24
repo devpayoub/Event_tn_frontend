@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import { SectionCard } from "@/components/layout/page-container";
 import { CommentComposer } from "@/components/shared/comment-composer";
 import { useClickSound } from "@/hooks/use-click-sound";
@@ -27,8 +28,9 @@ export function PostDetailView({
 	initialComments,
 	meetings,
 }: PostDetailViewProps) {
-	const router = useRouter();
+	const 	router = useRouter();
 	const playClick = useClickSound();
+	const { toast } = useToast();
 	const [comments, setComments] = useState<CommentItem[]>(initialComments);
 	const [likes, setLikes] = useState(post.likes);
 	const [hasLiked, setHasLiked] = useState(false);
@@ -111,6 +113,7 @@ export function PostDetailView({
 		} catch (err) {
 			setLikes(prevLikes);
 			setHasLiked(prevHasLiked);
+			toast("error", "Failed to update like");
 		}
 	};
 

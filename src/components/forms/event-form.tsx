@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import { useClickSound } from "@/hooks/use-click-sound";
 import type { EventItem } from "@/lib/api";
 import { useRouter } from "next/navigation";
@@ -14,6 +15,7 @@ interface EventFormProps {
 export function EventForm({ initialData }: EventFormProps) {
 	const router = useRouter();
 	const playClick = useClickSound();
+	const { toast } = useToast();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 
@@ -78,10 +80,12 @@ export function EventForm({ initialData }: EventFormProps) {
 			}
 
 			const created = initialData ? null : await res.json();
+			toast("success", initialData ? "Event updated successfully" : "Event created successfully");
 			router.push(`/app/events/${created ? created.id : id}`);
 			router.refresh();
 		} catch (err: any) {
 			setError(err.message || "An unexpected error occurred");
+			toast("error", err.message || "An unexpected error occurred");
 		} finally {
 			setLoading(false);
 		}

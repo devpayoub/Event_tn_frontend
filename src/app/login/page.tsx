@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import { useClickSound } from "@/hooks/use-click-sound";
 import { motion } from "motion/react";
 import Link from "next/link";
@@ -8,8 +9,9 @@ import type React from "react";
 import { useState } from "react";
 
 export default function LoginPage() {
-	const router = useRouter();
+	const 	router = useRouter();
 	const playClick = useClickSound();
+	const { toast } = useToast();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
@@ -37,10 +39,12 @@ export default function LoginPage() {
 			localStorage.setItem("access_token", data.access);
 
 			document.cookie = "logged_in=true; path=/; max-age=86400; SameSite=Lax";
+			toast("success", "Welcome back! You are now logged in.");
 			router.push("/app");
 			router.refresh();
 		} catch (err: any) {
 			setError(err.message || "An error occurred");
+			toast("error", err.message || "An error occurred");
 		} finally {
 			setLoading(false);
 		}

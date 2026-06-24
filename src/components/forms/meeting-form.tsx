@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import { useClickSound } from "@/hooks/use-click-sound";
 import type { EventItem, MeetingItem, PostItem } from "@/lib/api";
 import { useRouter } from "next/navigation";
@@ -23,6 +24,7 @@ export function MeetingForm({
 }: MeetingFormProps) {
 	const router = useRouter();
 	const playClick = useClickSound();
+	const { toast } = useToast();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 
@@ -82,6 +84,7 @@ export function MeetingForm({
 				throw new Error(data.error || "Failed to save meeting");
 			}
 
+			toast("success", initialData ? "Meeting updated successfully" : "Meeting scheduled successfully");
 			if (initialData) {
 				router.push(`/app/meetings/${initialData.id}`);
 			} else if (prefilledPostId) {
@@ -94,6 +97,7 @@ export function MeetingForm({
 			router.refresh();
 		} catch (err: any) {
 			setError(err.message || "An unexpected error occurred");
+			toast("error", err.message || "An unexpected error occurred");
 		} finally {
 			setLoading(false);
 		}

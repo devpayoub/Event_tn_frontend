@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import type React from "react";
 import { useRef, useState } from "react";
 
@@ -16,6 +17,7 @@ export function DragDropUpload({
 	label,
 	placeholder = "Drag & drop an image here, or click to browse",
 }: DragDropUploadProps) {
+	const { toast } = useToast();
 	const [isDragOver, setIsDragOver] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -30,7 +32,7 @@ export function DragDropUpload({
 
 	const processFile = (file: File) => {
 		if (!file.type.startsWith("image/")) {
-			alert("Please upload an image file.");
+			toast("error", "Please upload an image file.");
 			return;
 		}
 		const reader = new FileReader();

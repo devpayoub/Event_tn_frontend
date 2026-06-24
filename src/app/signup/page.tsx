@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import { DragDropUpload } from "@/components/shared/drag-drop-upload";
 import { useClickSound } from "@/hooks/use-click-sound";
 import { motion } from "motion/react";
@@ -9,8 +10,9 @@ import type React from "react";
 import { useState } from "react";
 
 export default function SignupPage() {
-	const router = useRouter();
+	const 	router = useRouter();
 	const playClick = useClickSound();
+	const { toast } = useToast();
 	const [email, setEmail] = useState("");
 	const [name, setName] = useState("");
 	const [role, setRole] = useState("Event Contributor");
@@ -55,10 +57,12 @@ export default function SignupPage() {
 			localStorage.setItem("access_token", data.access);
 
 			document.cookie = "logged_in=true; path=/; max-age=86400; SameSite=Lax";
+			toast("success", "Account created successfully! Welcome aboard.");
 			router.push("/app");
 			router.refresh();
 		} catch (err: any) {
 			setError(err.message || "An error occurred");
+			toast("error", err.message || "An error occurred");
 		} finally {
 			setLoading(false);
 		}

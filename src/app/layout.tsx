@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/components/theme-provider";
+import { ToastProvider } from "@/components/shared/toast";
 import { GeistMono } from "geist/font/mono";
 import { GeistPixelSquare } from "geist/font/pixel";
 import { GeistSans } from "geist/font/sans";
@@ -21,7 +22,9 @@ export default function RootLayout({
 			<body
 				className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable} font-sans antialiased bg-[var(--color-background)] text-[var(--color-foreground)]`}
 			>
-				<ThemeProvider>{children}</ThemeProvider>
+				<ThemeProvider>
+					<ToastProvider>{children}</ToastProvider>
+				</ThemeProvider>
 			</body>
 		</html>
 	);

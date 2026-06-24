@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/shared/toast";
 import { SectionCard } from "@/components/layout/page-container";
 import { useClickSound } from "@/hooks/use-click-sound";
 import type { EventItem } from "@/lib/api";
@@ -14,6 +15,7 @@ interface EventsViewProps {
 export function EventsView({ initialEvents }: EventsViewProps) {
 	const router = useRouter();
 	const playClick = useClickSound();
+	const { toast } = useToast();
 	const [events, setEvents] = useState<EventItem[]>(initialEvents);
 	const [isAuth, setIsAuth] = useState(false);
 
@@ -63,15 +65,17 @@ export function EventsView({ initialEvents }: EventsViewProps) {
 				setEvents((prev) =>
 					prev.map((e) => (e.id === id ? { ...e, status: nextStatus } : e)),
 				);
+				toast("success", `Event ${nextStatus === "published" ? "published" : "unpublished"} successfully`);
 				router.refresh();
+			} else {
+				toast("error", "Failed to toggle publish status");
 			}
 		} catch (err) {
-			console.error("Failed to toggle publish status:", err);
+			toast("error", "Failed to toggle publish status");
 		}
 	};
 
 	const handleDelete = async (id: string) => {
-		if (!confirm("Are you sure you want to delete this event?")) return;
 		playClick();
 
 		const delToken = localStorage.getItem("access_token");
@@ -83,10 +87,13 @@ export function EventsView({ initialEvents }: EventsViewProps) {
 
 			if (res.ok) {
 				setEvents((prev) => prev.filter((e) => e.id !== id));
+				toast("success", "Event deleted successfully");
 				router.refresh();
+			} else {
+				toast("error", "Failed to delete event");
 			}
 		} catch (err) {
-			console.error("Failed to delete event:", err);
+			toast("error", "Failed to delete event");
 		}
 	};
 
