@@ -35,11 +35,9 @@ export default function ProfilePage() {
 		}).catch(() => {});
 	}, []);
 
-	const myEvents = events.filter((e: any) => e.authorName === profile?.name);
-	const myPosts = posts;
-	const myMeetings = meetings.filter((m: any) =>
-		(m.participants || "").split(",").map((p: string) => p.trim()).includes(profile?.name),
-	);
+	const myEvents = events.filter((e: any) => e.authorId === profile?.id);
+	const myPosts = posts.filter((p: any) => p.authorId === profile?.id);
+	const myMeetings = meetings.filter((m: any) => m.authorId === profile?.id);
 
 	return (
 		<PageContainer>
