@@ -74,7 +74,6 @@ export function PostForm({ initialData, events }: PostFormProps) {
 			const created = initialData ? null : await res.json();
 			toast("success", initialData ? "Post updated successfully" : "Post created successfully");
 			router.push(`/app/posts/${created ? created.id : id}`);
-			router.refresh();
 		} catch (err: any) {
 			setError(err.message || "An unexpected error occurred");
 			toast("error", err.message || "An unexpected error occurred");

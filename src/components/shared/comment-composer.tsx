@@ -3,7 +3,6 @@
 import { useToast } from "@/components/shared/toast";
 import { useClickSound } from "@/hooks/use-click-sound";
 import type { UserProfile } from "@/lib/api";
-import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 
@@ -22,7 +21,6 @@ export function CommentComposer({
 	parentId = null,
 	onSuccess,
 }: CommentComposerProps) {
-	const 	router = useRouter();
 	const playClick = useClickSound();
 	const { toast } = useToast();
 	const [content, setContent] = useState("");
@@ -58,7 +56,6 @@ export function CommentComposer({
 				setContent("");
 				toast("success", parentId ? "Reply posted successfully" : "Comment posted successfully");
 				if (onSuccess) onSuccess();
-				router.refresh();
 			} else {
 				const data = await res.json();
 				toast("error", data.detail || "Failed to post comment");

@@ -82,7 +82,6 @@ export function EventForm({ initialData }: EventFormProps) {
 			const created = initialData ? null : await res.json();
 			toast("success", initialData ? "Event updated successfully" : "Event created successfully");
 			router.push(`/app/events/${created ? created.id : id}`);
-			router.refresh();
 		} catch (err: any) {
 			setError(err.message || "An unexpected error occurred");
 			toast("error", err.message || "An unexpected error occurred");

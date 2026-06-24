@@ -12,7 +12,6 @@ import type {
 	UserProfile,
 } from "@/lib/api";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useState, useMemo } from "react";
 
 interface PostDetailViewProps {
@@ -28,7 +27,6 @@ export function PostDetailView({
 	initialComments,
 	meetings,
 }: PostDetailViewProps) {
-	const 	router = useRouter();
 	const playClick = useClickSound();
 	const { toast } = useToast();
 	const [comments, setComments] = useState<CommentItem[]>(initialComments);
@@ -117,8 +115,12 @@ export function PostDetailView({
 		}
 	};
 
-	const handleCommentPosted = () => {
-		router.refresh();
+	const handleCommentPosted = async () => {
+		const res = await fetch(`/api/comments?postId=${post.id}`);
+		if (res.ok) {
+			const data = await res.json();
+			setComments(Array.isArray(data) ? data : data.items ?? []);
+		}
 	};
 
 	// We can update local state when initialComments props change

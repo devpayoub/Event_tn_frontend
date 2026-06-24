@@ -121,7 +121,6 @@ export function PostsView({ initialPosts, events, comments, initialTotal = 0, in
 					prev.map((p) => (p.id === id ? { ...p, status: nextStatus } : p)),
 				);
 				toast("success", `Post ${nextStatus === "published" ? "published" : "unpublished"} successfully`);
-				router.refresh();
 			} else {
 				toast("error", "Failed to toggle publish status");
 			}
@@ -150,7 +149,6 @@ export function PostsView({ initialPosts, events, comments, initialTotal = 0, in
 			if (res.ok) {
 				setAllPosts((prev: PostItem[]) => prev.filter((p) => p.id !== id));
 				toast("success", "Post deleted successfully");
-				router.refresh();
 			} else {
 				toast("error", "Failed to delete post");
 			}

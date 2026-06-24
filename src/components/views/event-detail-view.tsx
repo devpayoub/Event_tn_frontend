@@ -2,7 +2,6 @@
 
 import { CommentComposer } from "@/components/shared/comment-composer";
 import type { CommentItem, UserProfile } from "@/lib/api";
-import { useRouter } from "next/navigation";
 import React, { useState, useMemo, useEffect } from "react";
 
 interface EventDetailViewProps {
@@ -11,7 +10,6 @@ interface EventDetailViewProps {
 }
 
 export function EventDetailView({ eventId, initialComments }: EventDetailViewProps) {
-	const router = useRouter();
 	const [comments, setComments] = useState<CommentItem[]>(initialComments);
 	const [profile, setProfile] = useState<UserProfile | null>(null);
 
@@ -65,8 +63,12 @@ export function EventDetailView({ eventId, initialComments }: EventDetailViewPro
 
 	const [replyingTo, setReplyingTo] = useState<string | null>(null);
 
-	const handleCommentPosted = () => {
-		router.refresh();
+	const handleCommentPosted = async () => {
+		const res = await fetch(`/api/comments?eventId=${eventId}`);
+		if (res.ok) {
+			const data = await res.json();
+			setComments(Array.isArray(data) ? data : data.items ?? []);
+		}
 	};
 
 	const formatDate = (isoStr: string) => {

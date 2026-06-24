@@ -101,7 +101,6 @@ export function EventsView({ initialEvents, initialTotal = 0, initialPages = 1 }
 					prev.map((e) => (e.id === id ? { ...e, status: nextStatus } : e)),
 				);
 				toast("success", `Event ${nextStatus === "published" ? "published" : "unpublished"} successfully`);
-				router.refresh();
 			} else {
 				toast("error", "Failed to toggle publish status");
 			}
@@ -130,7 +129,6 @@ export function EventsView({ initialEvents, initialTotal = 0, initialPages = 1 }
 			if (res.ok) {
 				setAllEvents((prev: EventItem[]) => prev.filter((e) => e.id !== id));
 				toast("success", "Event deleted successfully");
-				router.refresh();
 			} else {
 				toast("error", "Failed to delete event");
 			}

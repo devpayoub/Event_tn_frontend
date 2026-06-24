@@ -94,7 +94,6 @@ export function MeetingForm({
 			} else {
 				router.push("/app/meetings");
 			}
-			router.refresh();
 		} catch (err: any) {
 			setError(err.message || "An unexpected error occurred");
 			toast("error", err.message || "An unexpected error occurred");

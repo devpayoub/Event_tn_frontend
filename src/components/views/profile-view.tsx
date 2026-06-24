@@ -74,7 +74,6 @@ export function ProfileView({
 			if (type === "posts") setLocalPosts((prev) => prev.filter((p) => p.id !== id));
 			if (type === "meetings") setLocalMeetings((prev) => prev.filter((m) => m.id !== id));
 			toast("success", `${type.slice(0, -1).charAt(0).toUpperCase() + type.slice(0, -1).slice(1)} deleted successfully`);
-			router.refresh();
 		} else {
 			toast("error", `Failed to delete ${type.slice(0, -1)}`);
 		}

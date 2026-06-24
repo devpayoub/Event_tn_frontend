@@ -59,7 +59,6 @@ export default function SignupPage() {
 			document.cookie = "logged_in=true; path=/; max-age=86400; SameSite=Lax";
 			toast("success", "Account created successfully! Welcome aboard.");
 			router.push("/app");
-			router.refresh();
 		} catch (err: any) {
 			setError(err.message || "An error occurred");
 			toast("error", err.message || "An error occurred");
